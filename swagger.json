@@ -1,0 +1,187 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "OphigO users API",
+        "description": "Service to obtain registered users"
+    },
+    "schemes": [
+        "http"
+    ],
+    "host": "localhost:8000",
+    "basePath": "/v1",
+    "tags": [
+        {
+            "name": "users",
+            "description": "Service to obtain registered users"
+        }
+    ],
+    "paths": {
+        "/signup":{
+            "post":{
+                "tags":[
+                    "users"
+                ],
+                "summary":"User signup",
+                "parameters":[
+                    {   "name":"user details",
+                        "in":"body",
+                        "description":"register using emailId  password and name of the user",
+                        "type":"object",
+                        "schema":{
+                            "required":["emailId", "password", "name"],
+                            "properties":{
+                                "emailId":{
+                                    "type":"string"
+                                },
+                                "password":{
+                                    "type":"string"
+                                },
+                                "name":{
+                                    "type":"string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "description":"Returns success if user is successfully added to db",
+                "responses":{
+                    "200":{
+                        "description" : "auth token",
+                        "schema" :{
+                            "type":"object",
+                            "message":{
+                                "type":"string"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description" : "unable to add user as emailId already exists with us or emailId is invalid",
+                        "schema" :{
+                            "type":"object",
+                            "message":{
+                                "type":"string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login":{
+            "post":{
+                "tags":[
+                    "users"
+                ],
+                "summary":"User login",
+                "parameters":[
+                    {   "name":"user details",
+                        "in":"body",
+                        "description":"registered emailId of the user",
+                        "type":"object",
+                        "schema":{
+                            "required":["emailId", "password"],
+                            "properties":{
+                                "emailId":{
+                                    "type":"string"
+                                },
+                                "password":{
+                                    "type":"string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "description":"Returns auth token which can be used for further reuests",
+                "responses":{
+                    "200":{
+                        "description" : "auth token",
+                        "schema" :{
+                            "type":"object",
+                            "tokenId":{
+                                "type":"string"
+                            }
+                        }
+                    },
+                    "400":{
+                        "description" : "auth failure or invalid credentials",
+                        "schema" :{
+                            "type":"object",
+                            "message":{
+                                "type":"string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users":{
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Gets all users registered",
+                "parameters": [
+                    {
+                        "name" : "per_page",
+                        "in": "query",
+                        "description":"Specify the number that need to be considered for per page if no value is specified a default value of 100 is considered",
+                        "required":false,
+                        "type":"number"
+                    },
+                    {
+                        "name" : "page",
+                        "in": "query",
+                        "description":"Specify the page number that need to be considered, if no value is specified then first page is considered",
+                        "required":false,
+                        "type":"number"
+                    },
+                    {
+                        "name":"authorization",
+                        "in":"header",
+                        "description":"Bearer Token",
+                        "required":true,
+                        "type":"string"
+                    }
+                ],
+                "description": "Returns a list of users.",
+                "responses": {
+                    "200": {
+                        "description": "List of users",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "pageNumber": {
+                                    "type": "number"
+                                },
+                                "userCount": {
+                                    "type": "number"
+                                },
+                                "users": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {"type": "string"},
+                                            "emailId":{"type":"string"}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403":{
+                        "description": "List of errors",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message":{
+                                    "type":"string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }        
+    }
+}
